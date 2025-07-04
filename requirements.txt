@@ -1,0 +1,20 @@
+livekit-agents
+livekit-plugins-deepgram
+livekit-plugins-openai
+livekit-plugins-silero
+faster-whisper==1.1.0
+python-dotenv
+ctranslate2==4.6.0
+nvidia-cublas-cu12
+nvidia-cudnn-cu12~=9.1
+torch
+simli-ai>=0.1.11
+numpy
+opencv-python
+fastapi
+uvicorn
+httpx
+livekit-agents[elevenlabs]~=1.0
+livekit-agents[bithuman]~=1.0
+
+aiortc>=1.11.0 # fixes video/rtx codec issue
