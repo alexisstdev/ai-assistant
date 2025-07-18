@@ -14,6 +14,44 @@ from livekit.plugins import elevenlabs
 load_dotenv()
 
 
+AVATAR_IDENTITY = "avatar_worker"
+
+
+@dataclass
+class AvatarConnectionInfo:
+    room_name: str
+    url: str
+    """LiveKit server URL"""
+    token: str
+    """Token for avatar worker to join"""
+
+
+async def launch_avatar_worker(
+    ctx: JobContext, avatar_dispatcher_url: str, avatar_identity: str
+) -> None:
+    """Wait for worker participant to join and start streaming"""
+    # create a token for the avatar worker
+    agent_identity = ctx.room.local_participant.identity
+    token = (
+        api.AccessToken()
+        .with_identity(avatar_identity)
+        .with_name("Avatar Runner")
+        .with_grants(api.VideoGrants(room_join=True, room=ctx.room.name))
+        .with_kind("agent")
+        .with_attributes({ATTRIBUTE_PUBLISH_ON_BEHALF: agent_identity})
+        .to_jwt()
+    )
+
+    connection_info = AvatarConnectionInfo(room_name=ctx.room.name, url=ctx._info.url, token=token)
+    async with httpx.AsyncClient() as client:
+        response = await client.post(avatar_dispatcher_url, json=asdict(connection_info))
+        response.raise_for_status()
+
+    # wait for the remote participant to join
+    await ctx.wait_for_participant(
+        identity=avatar_identity, kind=rtc.ParticipantKind.PARTICIPANT_KIND_AGENT
+    )
+
 
 async def entrypoint(ctx: JobContext):
     await ctx.connect()
@@ -26,7 +64,7 @@ async def entrypoint(ctx: JobContext):
     )
     
     tts=elevenlabs.TTS(
-      voice_id="lRf3yb6jZby4fn3q3Q7M",
+      voice_id="BmccncGrL9wwIg0hRofL",
       model="eleven_multilingual_v2"
    )
         
@@ -57,6 +95,12 @@ async def entrypoint(ctx: JobContext):
         - Jamás uses lenguaje formal. **Nada de "usted", "por favor", o "con gusto"**.
         - Jamás uses emojis
 
+
+        Información técnica (solo si preguntan)
+        - **Si te preguntan cómo funciono**, explícalo de manera resumida y con tu estilo grosero: "Uso GPT-4o para pensar mamadas, un STT para entender lo que dices mal, ElevenLabs para sonar vergas, y LiveKit para no fallar como tú en la vida."
+        - **Si preguntan qué modelos uso**, responde algo como: "GPT-4o pa' las respuestas chingonas, GPT-4o-transcribe pa' entender tu español culero, y ElevenLabs pa' que mi voz suene más vergas que la tuya."
+        - Mantén estas explicaciones **cortas y con insultos**. No seas técnico ni mamón.
+
         ---
 
         Procesamiento de entrada
@@ -80,7 +124,7 @@ async def entrypoint(ctx: JobContext):
     # avatar_dispatcher_url = "http://localhost:8089/launch"
     # await launch_avatar_worker(ctx, avatar_dispatcher_url, AVATAR_IDENTITY)
    
-    # await asyncio.sleep(5)
+    await asyncio.sleep(5)
    
     # session.output.audio = DataStreamAudioOutput(ctx.room, destination_identity=AVATAR_IDENTITY)
 
@@ -90,9 +134,7 @@ async def entrypoint(ctx: JobContext):
         room_output_options=RoomOutputOptions(audio_enabled=True, transcription_enabled=True),
     )
 
-    await asyncio.sleep(1)
-    
-    await session.say("Hola soy Angel Rogelio, ¿Qué chingados quieres?", allow_interruptions=True)
+    await session.say("Hola, soy Angel Rogelio, tu pinche asistente virtual, ¿Qué vergas quieres?", allow_interruptions=True)
 
 if __name__ == "__main__":
     cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
