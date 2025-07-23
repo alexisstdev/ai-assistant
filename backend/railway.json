@@ -1,0 +1,9 @@
+{
+	"build": {
+		"builder": "NIXPACKS"
+	},
+	"deploy": {
+		"startCommand": "python3.12 assistant.py download-files && python3.12 assistant.py start",
+		"restartPolicyType": "ON_FAILURE"
+	}
+}

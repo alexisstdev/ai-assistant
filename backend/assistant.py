@@ -1,57 +1,11 @@
 import asyncio
-import numpy as np
-from dataclasses import asdict, dataclass
-import httpx
-from livekit import rtc, api
-from livekit.agents import JobContext, WorkerOptions, AgentSession, Agent, cli, tokenize, tts, stt
-from livekit.agents.voice.avatar import DataStreamAudioOutput
-from livekit.agents.voice.room_io import ATTRIBUTE_PUBLISH_ON_BEHALF, RoomOutputOptions
+from livekit.agents import JobContext, WorkerOptions, AgentSession, Agent, cli
+from livekit.agents.voice.room_io import RoomOutputOptions
 from livekit.plugins import openai, silero
 from dotenv import load_dotenv
-from faster_whisper import WhisperModel
 from livekit.plugins import elevenlabs
 
 load_dotenv()
-
-
-AVATAR_IDENTITY = "avatar_worker"
-
-
-@dataclass
-class AvatarConnectionInfo:
-    room_name: str
-    url: str
-    """LiveKit server URL"""
-    token: str
-    """Token for avatar worker to join"""
-
-
-async def launch_avatar_worker(
-    ctx: JobContext, avatar_dispatcher_url: str, avatar_identity: str
-) -> None:
-    """Wait for worker participant to join and start streaming"""
-    # create a token for the avatar worker
-    agent_identity = ctx.room.local_participant.identity
-    token = (
-        api.AccessToken()
-        .with_identity(avatar_identity)
-        .with_name("Avatar Runner")
-        .with_grants(api.VideoGrants(room_join=True, room=ctx.room.name))
-        .with_kind("agent")
-        .with_attributes({ATTRIBUTE_PUBLISH_ON_BEHALF: agent_identity})
-        .to_jwt()
-    )
-
-    connection_info = AvatarConnectionInfo(room_name=ctx.room.name, url=ctx._info.url, token=token)
-    async with httpx.AsyncClient() as client:
-        response = await client.post(avatar_dispatcher_url, json=asdict(connection_info))
-        response.raise_for_status()
-
-    # wait for the remote participant to join
-    await ctx.wait_for_participant(
-        identity=avatar_identity, kind=rtc.ParticipantKind.PARTICIPANT_KIND_AGENT
-    )
-
 
 async def entrypoint(ctx: JobContext):
     await ctx.connect()

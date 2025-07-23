@@ -1,8 +1,10 @@
-# LiveKit Assistant
+# Angel Rogelio AI
 
-First, create a virtual environment, update pip, and install the required packages:
+For the backend, first, create a virtual environment, update pip, and install the required packages:
 
 ```
+cd ./backend
+
 python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -U pip
@@ -27,9 +29,15 @@ Then, run the assistant:
 ```
 python3.12 assistant.py download-files
 
-export LD_LIBRARY_PATH=`python3 -c 'import os; import nvidia.cublas.lib; import nvidia.cudnn.lib; print(os.path.dirname(nvidia.cublas.lib.__file__) + ":" + os.path.dirname(nvidia.cudnn.lib.__file__))'`
-
 python3.12 assistant.py start
+```
+
+For the frontend, navigate to the frontend directory and run the following commands:
+
+```
+cd ./frontend
+npm install
+npm run dev
 ```
 
 Finally, you can load the [hosted playground](https://agents-playground.livekit.io/) and connect it.
