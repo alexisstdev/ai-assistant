@@ -33,7 +33,7 @@ def get_initial_message(mode):
     """Get initial message based on personality mode"""
     messages = {
         "grosero": "Hola, soy Angel Rogelio, tu pinche asistente virtual, ¿Qué vergas quieres?",
-        "adaptativo": "¡Hola! Soy Angel Rogelio, tu asistente virtual adaptable. Puedo ajustar mi personalidad según prefieras. ¿En qué puedo ayudarte?"
+        "adaptativo": "¡Hola! Soy Angel Rogelio, tu asistente virtual. ¿En qué puedo ayudarte?"
     }
     return messages.get(mode, messages["grosero"])
 
