@@ -10,7 +10,7 @@ from livekit.plugins import elevenlabs
 load_dotenv()
 
 # Global variable to store the personality mode
-PERSONALITY_MODE = "adaptativo"  # default 
+PERSONALITY_MODE = "grosero"  # default 
 
 def load_prompt(mode):
     """Load prompt based on personality mode"""
