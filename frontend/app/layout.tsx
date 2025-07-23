@@ -54,14 +54,11 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 		.join("\n");
 
 	return (
-		<html lang="en" suppressHydrationWarning className="scroll-smooth">
+		<html lang="es" suppressHydrationWarning className="scroll-smooth">
 			<head>
 				{styles && <style>{styles}</style>}
 				<title>{pageTitle}</title>
-				<meta
-					name="description"
-					content={pageDescription + "\n\nBuilt with LiveKit Agents."}
-				/>
+				<meta name="description" content={pageDescription} />
 				<ApplyThemeScript />
 			</head>
 			<body

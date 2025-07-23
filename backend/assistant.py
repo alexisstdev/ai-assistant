@@ -10,9 +10,9 @@ from livekit.plugins import elevenlabs
 load_dotenv()
 
 # Global variable to store the personality mode
-PERSONALITY_MODE = "grosero"  # default
+PERSONALITY_MODE = "grosero"  # default 
 
-def load_prompt(mode="grosero"):
+def load_prompt(mode):
     """Load prompt based on personality mode"""
     prompt_files = {
         "grosero": "prompt_grosero.txt",
@@ -29,7 +29,7 @@ def load_prompt(mode="grosero"):
         print(f"Warning: {prompt_file} not found, using default prompt")
         return "You are Angel Rogelio, a helpful AI assistant."
 
-def get_initial_message(mode="grosero"):
+def get_initial_message(mode):
     """Get initial message based on personality mode"""
     messages = {
         "grosero": "Hola, soy Angel Rogelio, tu pinche asistente virtual, ¿Qué vergas quieres?",
